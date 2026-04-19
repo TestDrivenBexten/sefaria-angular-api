@@ -1,11 +1,23 @@
-import { Component, inject, signal } from '@angular/core';
-import { JsonPipe } from '@angular/common';
+import { Component, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RouterOutlet } from '@angular/router';
 
+interface SefariaVersion {
+  language: string;
+  text: string | string[];
+  versionTitle: string;
+  direction: string;
+}
+
+interface SefariaResponse {
+  versions: SefariaVersion[];
+  ref: string;
+  heRef: string;
+}
+
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, JsonPipe],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -13,9 +25,18 @@ export class App {
   private http = inject(HttpClient);
 
   query = signal('');
-  result = signal<unknown>(null);
+  result = signal<SefariaResponse | null>(null);
   error = signal<string | null>(null);
   loading = signal(false);
+
+  hebrewText = computed(() => {
+    const res = this.result();
+    if (!res) return null;
+    const heVersion = res.versions.find(v => v.language === 'he');
+    if (!heVersion) return null;
+    const text = heVersion.text;
+    return Array.isArray(text) ? text : [text];
+  });
 
   search(): void {
     const tref = this.query().trim();
@@ -25,7 +46,7 @@ export class App {
     this.error.set(null);
     this.result.set(null);
 
-    this.http.get(`https://www.sefaria.org/api/v3/texts/${encodeURIComponent(tref)}`).subscribe({
+    this.http.get<SefariaResponse>(`https://www.sefaria.org/api/v3/texts/${encodeURIComponent(tref)}`).subscribe({
       next: (data) => {
         this.result.set(data);
         this.loading.set(false);

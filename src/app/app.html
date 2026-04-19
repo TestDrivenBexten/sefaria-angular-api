@@ -20,7 +20,18 @@
     }
 
     @if (result()) {
-      <pre class="result">{{ result() | json }}</pre>
+      <div class="result-header">
+        <span class="ref">{{ result()!.heRef }}</span>
+      </div>
+      @if (hebrewText(); as verses) {
+        <div class="hebrew-text" dir="rtl">
+          @for (verse of verses; track $index) {
+            <p [innerHTML]="verse"></p>
+          }
+        </div>
+      } @else {
+        <p class="error">No Hebrew text found for this reference.</p>
+      }
     }
   </div>
 </main>

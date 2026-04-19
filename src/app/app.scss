@@ -54,13 +54,26 @@ main {
   color: #c62828;
 }
 
-.result {
+.result-header {
+  margin-top: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.ref {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #3f51b5;
+}
+
+.hebrew-text {
   margin-top: 1rem;
-  padding: 1rem;
-  background: #f5f5f5;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  overflow-x: auto;
-  white-space: pre-wrap;
-  word-break: break-word;
+  font-family: 'Times New Roman', serif;
+  font-size: 1.4rem;
+  line-height: 2;
+  color: #1a1a1a;
+
+  p {
+    margin: 0.25rem 0;
+  }
 }
